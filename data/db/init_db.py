@@ -43,6 +43,51 @@ class Settings(BaseSettings):
 
     REDIS_URL: RedisDsn
 
+    BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
+
+#ToDo: Review why this code is unreachable in the elif
+    @validator("BACKEND_CORS_ORIGINS", pre=True)
+    def assemble_cors_origins(cls, v: str | list[str]) -> list[str] | str:
+        if isinstance(v, str) and not v.startswith("["):
+            return [i.strip() for i in v.split(",")]
+        elif isinstance(v, (list, str)):
+            return v
+        raise ValueError(v)
+
+    DATABASE_URI: PostgresDsn
+
+    SMTP_TLS: bool = True
+    SMTP_PORT: int | None = None
+    SMTP_HOST: str | None = None
+    SMTP_USERNAME: str | None = None
+    SMTP_PASSWORD: str | None = None
+
+    SES_ACCESS_KEY: str | None = None
+    SES_SECRET_KEY: str | None = None
+    SES_REGION: str | None = None
+
+    DEFAULT_FROM_EMAIL: EmailStr
+    DEFAULT_FROM_NAME: str | None = None
+    EMAILS_ENABLED: bool = False
+
+    @validator("EMAILS_ENABLED", pre=True)
+    def get_emails_enabled(cls, _: bool, values: dict[str, Any]) -> bool:
+        return bool(
+            values.get("SMTP_HOST")
+            and values.get("SMTP_PORT")
+            and values.get("DEVAULT_FROM_EMAIL")
+        )
+
+    FIRST_SUPERUSER_EMAIL: EmailStr
+    FIRST_SUPERUSER_PASSWORD: str
+
+    class Config:
+        case_sensitive = True
+        env_file = ".env"
+
+
+
+
 settings = Settings()
 
 
