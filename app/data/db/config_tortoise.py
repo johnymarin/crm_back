@@ -7,7 +7,7 @@ from tortoise.contrib.fastapi import register_tortoise
 def register_db(fastapi_app: FastAPI) -> None:
     register_tortoise(
         app=fastapi_app,
-        db_url='sqlite://app/data/db/db.sqlite3',
+        db_url='postgres://postgres:pass@db.host:5432/somedb',
         modules={'models': ['app.data.models.models']},
         generate_schemas=True,
         add_exception_handlers=True,
