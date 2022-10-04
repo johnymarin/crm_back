@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from app.data.db.config_tortoise import register_db
-from app.services.endpoints.endpoints import api_router
+from app.services.endpoints.endpoints import *
 
 app = FastAPI(
     title="Migracion CRM by Johny Marin Gutierrez",
@@ -19,5 +19,6 @@ app.add_middleware(
 )
 
 app.include_router(api_router, prefix="/api")
+app.include_router(persons_router, prefix="/api")
 
 register_db(app)
